@@ -263,6 +263,7 @@ class _Feature(_BaseObject):
     # custom data.
     #
     # (2) is already implemented, see UntypedExtendedData
+    # (3) is partially implemented, see TypedExtendedData
     #
     # <Metadata> (deprecated in KML 2.2; use <ExtendedData> instead)
     extended_data = None
@@ -1405,6 +1406,25 @@ class ExtendedData(_XMLObject):
             el = SchemaData(self.ns, 'dummy')
             el.from_element(sd)
             self.elements.append(el)
+
+
+class TypedExtendedData(_XMLObject):
+    """ Represents a list of typed name/value pairs. See docs:
+
+    -> 'Adding Arbitrary XML Data to a Feature'
+       https://developers.google.com/kml/documentation/extendeddata
+
+    """
+    __name__ = 'ExtendedData'
+
+    def __init__(self, ns=None, etree=None):
+        super(TypedExtendedData, self).__init__(ns)
+        self._etree = etree
+
+    def etree_element(self):
+        element = super(TypedExtendedData, self).etree_element()
+        element.append(self._etree)
+        return element
 
 
 class UntypedExtendedData(ExtendedData):
